@@ -1,5 +1,7 @@
 ## Express Starter Kit
 
+- Make sure to run export ```NODE_PATH=./config:./app/controllers```
+
 ### Defaults
 - Node/Express MVC Architecture
 - MongoDB
