@@ -16,11 +16,22 @@ gulp.task('watch', function() {
 
 gulp.task('develop', function () {
   livereload.listen();
+  console.log('listening to', __dirname);
   nodemon({
     script: 'server.js',
-    ext: 'js coffee swig',
-    env: {ENV: 'development'}
-  }).on('restart', function () {
+    ext: 'js html css',
+    env: {
+      'NODE_ENV': 'development'
+    }
+  })
+  .on('change', function() {
+    console.log('changed');
+    setTimeout(function () {
+      livereload.changed(__dirname);
+    }, 500);
+  })
+  .on('restart', function () {
+    console.log('restarted')
     setTimeout(function () {
       livereload.changed(__dirname);
     }, 500);
