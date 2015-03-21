@@ -19,10 +19,11 @@
 
     {% block head %}
       {# Styles #}
+      <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="/css/app.css">
     {% endblock %}
 
-    {% if ENV_DEVELOPMENT %}
+    {% if (env == 'development') %}
       <script src="http://localhost:35729/livereload.js"></script>
     {% endif %}
   </head>
