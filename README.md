@@ -14,8 +14,6 @@
 - React
 - Livereload
 
-* The [wiki](https://github.com/madhums/node-express-mongoose/wiki) is wip, it has some information about the way application is setup.
-
 ## Requirements
 
 * [NodeJs](http://nodejs.org)
@@ -59,7 +57,3 @@ Then visit [http://localhost:3000/](http://localhost:3000/)
 ```sh
 $ npm test
 ```
-
-## License
-
-MIT
