@@ -1,0 +1,10 @@
+<div class="feed">
+  <h3>
+    <a href="{{ '/feeds/' + feed._id }}" title="{{ feed.source }}">
+      {{ feed.type }}
+    </a>
+  </h3>
+  <p>{{ feed.source }}</p>
+
+  <span class="muted">{{ feed.createdAt.toISOString()|date('M d, Y  h:m a') }}</span>
+</div>
