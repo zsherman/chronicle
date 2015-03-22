@@ -9,6 +9,7 @@
 var users = require('users');
 var articles = require('articles');
 var feeds = require('feeds');
+var subscriptions = require('subscriptions');
 var comments = require('comments');
 var tags = require('tags');
 var auth = require('./middlewares/authorization');
@@ -101,6 +102,10 @@ module.exports = function (app, passport) {
   // feed routes
   app.post('/feeds', feeds.create);
   app.get('/feeds', feeds.index);
+
+  // subscription routes
+  app.post('/subscriptions', subscriptions.create);
+  app.get('/subscriptions', subscriptions.index);
 
   // home route
   app.get('/', articles.index);

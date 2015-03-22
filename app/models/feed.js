@@ -46,7 +46,11 @@ FeedSchema.pre('remove', function (next) {
 
 FeedSchema.pre('save', function(next) {
   next();
-})
+});
+
+FeedScheme.post('save', function(feed) {
+  // Scrape the feed
+});
 
 /**
  * Methods

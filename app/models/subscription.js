@@ -27,9 +27,10 @@ var SubscriptionSchema = new Schema({
   user : {type : Schema.ObjectId, ref : 'User'},
   feed : {type : Schema.ObjectId, ref : 'Feed'},
   frequency : {type : Number, default : 168}, // In hours
+  quantity : {type : Number, default : 5},
   day : { type: String, default: '' },
   active: {type: Boolean, default: true},
-  runAt : {type : Date, default : Date.now},
+  sentAt : {type : Date, default : Date.now},
   createdAt : {type : Date, default : Date.now}
 });
 
