@@ -32,20 +32,29 @@ var setTags = function (tags) {
  * Article Schema
  */
 
+// var ArticleSchema = new Schema({
+//   title: {type : String, default : '', trim : true},
+//   body: {type : String, default : '', trim : true},
+//   user: {type : Schema.ObjectId, ref : 'User'},
+//   comments: [{
+//     body: { type : String, default : '' },
+//     user: { type : Schema.ObjectId, ref : 'User' },
+//     createdAt: { type : Date, default : Date.now }
+//   }],
+//   tags: {type: [], get: getTags, set: setTags},
+//   image: {
+//     cdnUri: String,
+//     files: []
+//   },
+//   createdAt  : {type : Date, default : Date.now}
+// });
+
 var ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
   body: {type : String, default : '', trim : true},
-  user: {type : Schema.ObjectId, ref : 'User'},
-  comments: [{
-    body: { type : String, default : '' },
-    user: { type : Schema.ObjectId, ref : 'User' },
-    createdAt: { type : Date, default : Date.now }
-  }],
+  feed: {type : Schema.ObjectId, ref : 'Feed'},
   tags: {type: [], get: getTags, set: setTags},
-  image: {
-    cdnUri: String,
-    files: []
-  },
+  image: {type : String, default : '', trim : true},
   createdAt  : {type : Date, default : Date.now}
 });
 
@@ -54,7 +63,6 @@ var ArticleSchema = new Schema({
  */
 
 ArticleSchema.path('title').required(true, 'Article title cannot be blank');
-ArticleSchema.path('body').required(true, 'Article body cannot be blank');
 
 /**
  * Pre-remove hook
