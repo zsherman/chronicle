@@ -1,4 +1,4 @@
-## Express Starter Kit
+## Chronicle
 
 ### Turning the internet's feeds into digestible, bite-sized chunks of awesomeness.
 ### RSS redesigned for the 21st century.
