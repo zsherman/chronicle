@@ -1,6 +1,7 @@
 ## Express Starter Kit
 
 ### Turning the internet's feeds into digestible, bite-sized chunks of awesomeness.
+### RSS redesigned for the 21st century.
 
 - Make sure to run export ```NODE_PATH=./config:./app/controllers```
 
