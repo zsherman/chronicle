@@ -25,7 +25,8 @@ var Subscription = mongoose.model('Subscription');
 // Connect to SendGrid
 var sendgrid  = require('sendgrid')('chronicle-app', 'no11pfds');
 
-// Run with node lib/worker.js | ./node_modules/bunyan/bin/bunyan
+// Run with node bin/worker.js | ./node_modules/bunyan/bin/bunyan
+// or on heroku with http://stackoverflow.com/questions/13345664/using-heroku-scheduler-with-node-js
 
 // User ObjectId("550daf18a4050bb275cb31f9")
 // Feed ObjectId("550df667ecbeeaf9a3b28d0f")
