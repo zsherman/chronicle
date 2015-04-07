@@ -47,6 +47,7 @@ SubscriptionSchema.path('user').required(true, 'Subscription feed cannot be blan
 
 SubscriptionSchema.pre('remove', function (next) {
   // If other users are subscribed to this Subscription, don't delete it
+  console.log("yo");
   next();
 });
 
@@ -78,6 +79,7 @@ SubscriptionSchema.statics = {
 
   load: function (id, cb) {
     this.findOne({ _id : id })
+      .populate('user', 'name email username')
       .exec(cb);
   },
 

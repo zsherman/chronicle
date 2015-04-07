@@ -17,10 +17,10 @@ var extend = require('util')._extend
 exports.load = function (req, res, next, id){
   var Subscription = mongoose.model('Subscription');
 
-  Article.load(id, function (err, article) {
+  Subscription.load(id, function (err, subscription) {
     if (err) return next(err);
-    if (!article) return next(new Error('not found'));
-    req.article = article;
+    if (!subscription) return next(new Error('not found'));
+    req.subscription = subscription;
     next();
   });
 };
@@ -31,23 +31,23 @@ exports.load = function (req, res, next, id){
 
 exports.index = function (req, res){
   var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = 30;
-  var options = {
-    perPage: perPage,
-    page: page
-  };
+    var perPage = 30;
+    var options = {
+      perPage: perPage,
+      page: page
+    };
 
-  Subscription.list(options, function (err, subscriptions) {
-    if (err) return res.render('500');
-    Subscription.count().exec(function (err, count) {
-      res.render('subscriptions/index', {
-        title: 'Subscriptions',
-        subscriptions: subscriptions,
-        page: page + 1,
-        pages: Math.ceil(count / perPage)
+    Subscription.list(options, function (err, subscriptions) {
+      if (err) return res.render('500');
+      Subscription.count().exec(function (err, count) {
+        res.render('subscriptions/index', {
+          title: 'Subscriptions',
+          subscriptions: subscriptions,
+          page: page + 1,
+          pages: Math.ceil(count / perPage)
+        });
       });
     });
-  });
 };
 
 /**
@@ -67,7 +67,6 @@ exports.new = function (req, res){
  */
 
 exports.create = function (req, res) {
-  console.log(req.body);
   var newSubscription = new Subscription(req.body);
   Subscription.findOne({user: req.user, feed: req.body.feed}, function (err, doc) {
     if (!doc) {
@@ -80,6 +79,10 @@ exports.create = function (req, res) {
     }
   });
 };
+
+exports.unsubscribe = function(req, res) {
+  console.log("unsub");
+}
 
 /**
  * Edit an article
@@ -94,7 +97,7 @@ exports.edit = function (req, res) {
  */
 
 exports.update = function (req, res){
-
+  console.log(req.body);
 };
 
 /**
@@ -102,9 +105,10 @@ exports.update = function (req, res){
  */
 
 exports.show = function (req, res){
+  console.log(req);
   res.render('subscriptions/show', {
-    title: req.article.title,
-    feed: req.feed
+    title: "Subscription",
+    subscription: req.subscription
   });
 };
 
@@ -113,5 +117,14 @@ exports.show = function (req, res){
  */
 
 exports.destroy = function (req, res){
-
+  console.log("ok");
+  var subscription = req.subscription;
+  subscription.remove(function (err){
+    req.flash('info', 'Deleted successfully');
+    res.redirect('/feeds');
+  });
+  // console.log(req.body);
+  // Subscription.findOneAndRemove({user: req.user, subscription: req.param('id')}, function(err, doc) {
+  //   res.json(doc);
+  // });
 };

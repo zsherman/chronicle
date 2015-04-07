@@ -37,6 +37,20 @@ exports.article = {
   }
 }
 
+/*
+ *  Subscription authorization routing middleware
+ */
+
+exports.subscription = {
+  hasAuthorization: function (req, res, next) {
+    if (req.subscription.user.id != req.user.id) {
+      req.flash('info', 'You are not authorized')
+      return res.redirect('/feeds')
+    }
+    next()
+  }
+}
+
 /**
  * Comment authorization routing middleware
  */
