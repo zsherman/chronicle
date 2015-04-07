@@ -48,7 +48,7 @@ FeedSchema.pre('save', function(next) {
   next();
 });
 
-FeedScheme.post('save', function(feed) {
+FeedSchema.post('save', function(feed) {
   // Scrape the feed
 });
 

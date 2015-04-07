@@ -18,10 +18,6 @@ mongoose.connection.on('disconnected', connect);
 var mongooseSubscription = require('../app/models/subscription');
 var Subscription = mongoose.model('Subscription');
 
-// Connect to Mandrill
-// var mandrill = require('mandrill-api/mandrill');
-// var mandrill_client = new mandrill.Mandrill('NJPqZ5v3RGBraIyTy_vQ_g');
-
 // Connect to SendGrid
 var sendgrid  = require('sendgrid')('chronicle-app', 'no11pfds');
 
@@ -78,8 +74,3 @@ sendgrid.send(email, function(err, json) {
   if (err) { console.error(err); }
   console.log(json);
 });
-
-// rereddit.read('funny').limit(5)
-//     .end(function(err, posts) {
-//         log.info(posts);
-//     });
