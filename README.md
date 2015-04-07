@@ -13,6 +13,8 @@
 - SASS
 - React
 - Livereload
+- 
+https://github.com/rc0x03/node-osmosis
 
 ## Requirements
 
