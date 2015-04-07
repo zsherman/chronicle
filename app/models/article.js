@@ -52,11 +52,12 @@ var setTags = function (tags) {
 var ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
   feed: {type : Schema.ObjectId, ref : 'Feed'},
-  link: {type : String, default : '', trim : true},
+  link: {type : String, default : '', trim : true, unique : true},
   score: {type : Number, default : 1 },
   tags: {type: [], get: getTags, set: setTags},
   image: {type : String, default : '', trim : true},
-  createdAt  : {type : Date, default : Date.now}
+  createdAt  : {type : Date, default : Date.now},
+  updatedAt : {type : Date, default : Date.now}
 });
 
 /**

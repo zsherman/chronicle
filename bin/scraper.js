@@ -65,12 +65,20 @@ xray('reddit.com/r/funny')
   .run(function(err, elements) {
     // Fill in article values
     _.each(elements, function(element) {
-      var newArticle = new Article({
-        title: element.title,
-        link: element.link
-      });
-      newArticle.save(function(err) {
-        if(err) console.log(err);
+
+      Article.findOne({link: element.link}, function (err, doc) {
+        if (!doc) {
+          var newArticle = new Article({
+            title: element.title,
+            link: element.link,
+            score: element.score
+          });
+          newArticle.save();
+        } else {
+          doc.score = element.score;
+          doc.updatedAt = new Date().toJSON().toString();
+          doc.save();
+        }
       });
     });
   });
