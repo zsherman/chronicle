@@ -68,10 +68,16 @@ exports.new = function (req, res){
 
 exports.create = function (req, res) {
   console.log(req.body);
-  var subscription = new Subscription(req.body);
-  subscription.save(function(err) {
-    if(err) res.json(err);
-    res.json(subscription);
+  var newSubscription = new Subscription(req.body);
+  Subscription.findOne({user: req.user, feed: req.body.feed}, function (err, doc) {
+    if (!doc) {
+      newSubscription.save(function(err) {
+          if(err) res.json(err);
+          res.json(newSubscription);
+        });
+    } else {
+      res.status(400).send('Subscription already exists');
+    }
   });
 };
 

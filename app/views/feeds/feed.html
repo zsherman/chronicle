@@ -5,6 +5,7 @@
     </a>
   </h3>
   <p>type: {{ feed.type }}</p>
+  <p><a href="#" data-feed-id="{{ '' + feed._id }}" class="subscribe">Subscribe</a></p>
 
   <span class="muted">{{ feed.createdAt.toISOString()|date('M d, Y  h:m a') }}</span>
 </div>
