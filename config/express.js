@@ -28,11 +28,14 @@ var pkg = require('../package.json');
 
 var mongoose = require('mongoose');
 // Connect to mongodb
-var connect = function () {
-  var options = { server: { socketOptions: { keepAlive: 1 } } };
-  mongoose.connect(config.db, options);
-};
-connect();
+// var connect = function () {
+//   var options = { server: { socketOptions: { keepAlive: 1 } } };
+//   mongoose.connect(config.db, options);
+// };
+// connect();
+
+var options = { server: { socketOptions: { keepAlive: 1 } } };
+var connection = mongoose.createConnection(config.db, options);
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -108,7 +111,7 @@ module.exports = function (app, passport) {
     saveUninitialized: true,
     secret: pkg.name,
     store: new mongoStore({
-      db: mongoose.connection.db,
+      mongooseConnection: connection,
       collection : 'sessions'
     })
   }));
