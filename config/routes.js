@@ -20,6 +20,7 @@ var auth = require('./middlewares/authorization');
 
 var articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
 var commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
+var subscriptionAuth = [auth.requiresLogin, auth.subscription.hasAuthorization];
 
 /**
  * Expose routes
@@ -97,15 +98,18 @@ module.exports = function (app, passport) {
   app.get('/articles/:id', articles.show);
   app.get('/articles/:id/edit', articleAuth, articles.edit);
   app.put('/articles/:id', articleAuth, articles.update);
-  app.delete('/articles/:id', articleAuth, articles.destroy);
+  app.delete('/articles/:id', articles.destroy);
 
   // feed routes
   app.post('/feeds', feeds.create);
   app.get('/feeds', feeds.index);
 
   // subscription routes
+  app.param('subscriptionId', subscriptions.load);
   app.post('/subscriptions', subscriptions.create);
   app.get('/subscriptions', subscriptions.index);
+  app.get('/subscriptions/:subscriptionId', subscriptions.show);
+  app.delete('/subscriptions/:id', subscriptions.destroy);
 
   // home route
   app.get('/', articles.index);

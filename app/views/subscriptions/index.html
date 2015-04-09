@@ -1,0 +1,18 @@
+{% extends '../layouts/default.html' %}
+
+{% block main %}
+  <h1>{{title}}</h1>
+{% endblock %}
+
+{% block content %}
+  {% if (subscriptions.length) %}
+    {% for subscription in subscriptions %}
+      {% include 'subscription.html' %}
+    {% endfor %}
+  {% else %}
+    <h4 class="muted">
+      No articles.&nbsp;
+      <a href="/subscriptions/new">create one</a>
+    </h4>
+  {% endif %}
+{% endblock %}
