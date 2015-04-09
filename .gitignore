@@ -1,5 +1,7 @@
 node_modules/
 .monitor
 config/env/env.json
+config/env/.env
 Makefile
 .DS_Store
+.env
