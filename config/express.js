@@ -18,12 +18,21 @@ var csrf = require('csurf');
 var multer = require('multer');
 var swig = require('swig');
 
+var mongoose = require('mongoose');
 var mongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var winston = require('winston');
 var helpers = require('view-helpers');
 var config = require('config');
 var pkg = require('../package.json');
+
+var mongoose = require('mongoose');
+// Connect to mongodb
+var connect = function () {
+  var options = { server: { socketOptions: { keepAlive: 1 } } };
+  mongoose.connect(config.db, options);
+};
+connect();
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -99,7 +108,7 @@ module.exports = function (app, passport) {
     saveUninitialized: true,
     secret: pkg.name,
     store: new mongoStore({
-      url: config.db,
+      mongooseConnection: mongoose.connection,
       collection : 'sessions'
     })
   }));
