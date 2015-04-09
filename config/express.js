@@ -26,7 +26,6 @@ var helpers = require('view-helpers');
 var config = require('config');
 var pkg = require('../package.json');
 
-var mongoose = require('mongoose');
 // Connect to mongodb
 // var connect = function () {
 //   var options = { server: { socketOptions: { keepAlive: 1 } } };
@@ -111,8 +110,7 @@ module.exports = function (app, passport) {
     saveUninitialized: true,
     secret: pkg.name,
     store: new mongoStore({
-      mongooseConnection: connection,
-      collection : 'sessions'
+      mongooseConnection: connection
     })
   }));
 
