@@ -108,7 +108,7 @@ module.exports = function (app, passport) {
     saveUninitialized: true,
     secret: pkg.name,
     store: new mongoStore({
-      mongooseConnection: mongoose.connection,
+      db: mongoose.connection.db,
       collection : 'sessions'
     })
   }));
