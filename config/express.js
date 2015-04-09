@@ -26,7 +26,7 @@ var helpers = require('view-helpers');
 var config = require('config');
 var pkg = require('../package.json');
 
-Connect to mongodb
+//Connect to mongodb
 var connect = function () {
   var options = { server: { socketOptions: { keepAlive: 1 } } };
   mongoose.connect(config.db, options);
