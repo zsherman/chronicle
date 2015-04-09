@@ -26,15 +26,15 @@ var helpers = require('view-helpers');
 var config = require('config');
 var pkg = require('../package.json');
 
-// Connect to mongodb
-// var connect = function () {
-//   var options = { server: { socketOptions: { keepAlive: 1 } } };
-//   mongoose.connect(config.db, options);
-// };
-// connect();
+Connect to mongodb
+var connect = function () {
+  var options = { server: { socketOptions: { keepAlive: 1 } } };
+  mongoose.connect(config.db, options);
+};
+connect();
 
-var options = { server: { socketOptions: { keepAlive: 1 } } };
-var connection = mongoose.createConnection(config.db, options);
+// var options = { server: { socketOptions: { keepAlive: 1 } } };
+// var connection = mongoose.createConnection(config.db, options);
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -110,7 +110,7 @@ module.exports = function (app, passport) {
     saveUninitialized: true,
     secret: pkg.name,
     store: new mongoStore({
-      mongooseConnection: connection
+      db: mongoose.connection.db
     })
   }));
 
