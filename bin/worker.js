@@ -72,5 +72,7 @@ email.setSubstitutions({articles: ['<li><a href="https://reddit.com/r/funny">Gir
 
 sendgrid.send(email, function(err, json) {
   if (err) { console.error(err); }
+  // Alert Dead Man's Snitch
+  // request.get('https://nosnch.in/81ff490627');
   console.log(json);
 });

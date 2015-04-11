@@ -81,6 +81,8 @@ xray('reddit.com/r/funny')
         }
       });
     });
+    // Alert Dead Man's Snitch
+    request.get('https://nosnch.in/81ff490627')
   });
 
 

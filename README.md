@@ -4,6 +4,7 @@
 ### RSS redesigned for the 21st century.
 
 - Make sure to run export ```NODE_PATH=./config:./app/controllers```
+- For issues with ```connect-mongo``` see https://github.com/pilwon/ultimate-seed/issues/128
 
 ### Defaults
 - Node/Express MVC Architecture
@@ -13,7 +14,7 @@
 - SASS
 - React
 - Livereload
-- 
+-
 https://github.com/rc0x03/node-osmosis
 
 ## Requirements
