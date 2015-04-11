@@ -75,7 +75,10 @@ FeedSchema.statics = {
    */
 
   load: function (id, cb) {
+    console.log("id");
+    console.log(id);
     this.findOne({ _id : id })
+      // .populate('user', 'name email username')
       .exec(cb);
   },
 

@@ -13,12 +13,15 @@ var extend = require('util')._extend
  */
 
 exports.load = function (req, res, next, id){
+  console.log(id);
+  console.log(req);
   var Feed = mongoose.model('Feed');
 
-  Article.load(id, function (err, article) {
+  Feed.load(id, function (err, feed) {
+    console.log(feed);
     if (err) return next(err);
-    if (!article) return next(new Error('not found'));
-    req.article = article;
+    if (!feed) return next(new Error('not found'));
+    req.feed = feed;
     next();
   });
 };
@@ -69,7 +72,22 @@ exports.create = function (req, res) {
   var feed = new Feed(req.body);
   feed.save(function(err) {
     if(err) res.json(err);
-    res.json(feed);
+    //res.json(feed);
+
+    res.format({
+      text: function(){
+        res.send('created');
+      },
+
+      html: function(){
+        res.redirect('/feeds/'+feed._id);
+      },
+
+      json: function(){
+        res.json(feed);
+      }
+    });
+
   });
 };
 
@@ -95,7 +113,7 @@ exports.update = function (req, res){
 
 exports.show = function (req, res){
   res.render('feeds/show', {
-    title: req.article.title,
+    title: "Show Feed",
     feed: req.feed
   });
 };

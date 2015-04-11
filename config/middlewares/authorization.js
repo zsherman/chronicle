@@ -51,6 +51,13 @@ exports.subscription = {
   }
 }
 
+exports.feed = {
+  hasAuthorization: function (req, res, next) {
+    console.log(req);
+    next()
+  }
+}
+
 /**
  * Comment authorization routing middleware
  */

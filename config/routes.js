@@ -91,18 +91,21 @@ module.exports = function (app, passport) {
   app.param('userId', users.load);
 
   // article routes
-  app.param('id', articles.load);
+  app.param('articleId', articles.load);
   app.get('/articles', articles.index);
   app.get('/articles/new', auth.requiresLogin, articles.new);
   app.post('/articles', auth.requiresLogin, articles.create);
-  app.get('/articles/:id', articles.show);
+  app.get('/articles/:articleId', articles.show);
   app.get('/articles/:id/edit', articleAuth, articles.edit);
   app.put('/articles/:id', articleAuth, articles.update);
   app.delete('/articles/:id', articles.destroy);
 
   // feed routes
+  app.param('feedId', feeds.load);
+  app.get('/feeds/:feedId', feeds.show);
   app.post('/feeds', feeds.create);
   app.get('/feeds', feeds.index);
+  app.get('/feeds/new', feeds.new);
 
   // subscription routes
   app.param('subscriptionId', subscriptions.load);
@@ -129,6 +132,9 @@ module.exports = function (app, passport) {
    */
 
   app.use(function (err, req, res, next) {
+    console.log(err);
+    console.log(err.message);
+    console.log(req);
     // treat as 404
     if (err.message
       && (~err.message.indexOf('not found')
@@ -142,6 +148,7 @@ module.exports = function (app, passport) {
 
   // assume 404 since no middleware responded
   app.use(function (req, res, next) {
+    console.log(req.body);
     res.status(404).render('404', {
       url: req.originalUrl,
       error: 'Not found'
