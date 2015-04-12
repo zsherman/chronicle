@@ -13,12 +13,9 @@ var extend = require('util')._extend
  */
 
 exports.load = function (req, res, next, id){
-  console.log(id);
-  console.log(req);
   var Feed = mongoose.model('Feed');
 
   Feed.load(id, function (err, feed) {
-    console.log(feed);
     if (err) return next(err);
     if (!feed) return next(new Error('not found'));
     req.feed = feed;
@@ -68,7 +65,6 @@ exports.new = function (req, res){
  */
 
 exports.create = function (req, res) {
-  console.log(req.body);
   var feed = new Feed(req.body);
   feed.save(function(err) {
     if(err) res.json(err);
@@ -113,7 +109,7 @@ exports.update = function (req, res){
 
 exports.show = function (req, res){
   res.render('feeds/show', {
-    title: "Show Feed",
+    title: req.feed.source,
     feed: req.feed
   });
 };

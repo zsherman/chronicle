@@ -1,11 +1,10 @@
 {% extends '../layouts/default.html' %}
 
 {% block main %}
-  <h1>{{ title }}</h1>
   <h1>{{ feed.source }}</h1>
 {% endblock %}
 
 {% block content %}
-  <a href="#">Subscribe</a>
+  <p><a href="#" data-feed-id="{{ '' + feed._id }}" class="subscribe">Subscribe</a></p>
   <a href="#">Unsubscribe</a>
 {% endblock %}
