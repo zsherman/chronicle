@@ -5,6 +5,7 @@ var config = require('config');
 var mongoose = require('mongoose');
 var xray = require('x-ray');
 var _ = require('lodash');
+var async = require('async');
 
 // Connect to mongodb
 var connect = function () {
@@ -54,36 +55,84 @@ var log = bunyan.createLogger({name: "chronicle-emailer"});
 
 // Run with node bin/scraper.js | ./node_modules/bunyan/bin/bunyan
 
-xray('reddit.com/r/funny')
-  .select([{
-    $root: ".thing",
-    title: '.entry a.title',
-    link: '.entry a.title[href]',
-    image: 'a.thumbnail img[src]',
-    score: '.score.unvoted'
-  }])
-  .run(function(err, elements) {
-    // Fill in article values
-    _.each(elements, function(element) {
+// Get list of feeds
+  // Scrape each feed source
+    // Find or create article for each feed
+    // Save the article
+// Finish up
 
-      Article.findOne({link: element.link}, function (err, doc) {
-        if (!doc) {
-          var newArticle = new Article({
-            title: element.title,
-            link: element.link,
-            score: element.score
-          });
-          newArticle.save();
-        } else {
-          doc.score = element.score;
-          doc.updatedAt = new Date().toJSON().toString();
-          doc.save();
-        }
-      });
-    });
-    // Alert Dead Man's Snitch
-    request.get('https://nosnch.in/81ff490627')
+function scrapeSources(feeds, cb) {
+  var articles = [];
+  async.each(feeds, function(feed, callback) {
+    xray(feed.source)
+    .select([{
+      $root: ".thing",
+      title: '.entry a.title',
+      link: '.entry a.title[href]',
+      image: 'a.thumbnail img[src]',
+      score: '.score.unvoted'
+    }])
+    .run(function(err, elements) {
+      Array.prototype.push.apply(articles, elements);
+      callback();
+    })
+  }, function(err) {
+    cb(err, articles);
   });
+}
+
+function findOrCreateArticles(articles, cb) {
+  var newArticles = [];
+  async.each(articles, function(article, callback) {
+    var score = parseInt(article.score) || 0;
+    Article.findOne({link: article.link}, function (err, doc) {
+      if (!doc) {
+        var newArticle = new Article({
+          title: article.title,
+          link: article.link,
+          score: score
+        });
+        newArticle.save(function(error, newArticle) {
+          newArticles.push(newArticle);
+          callback();
+        });
+      } else {
+        doc.score = score;
+        doc.updatedAt = new Date().toJSON().toString();
+        doc.save(function(error, doc) {
+          newArticles.push(doc);
+          callback();
+        });
+      }
+    });
+  }, function(err) {
+    console.log("Created " + newArticles.length + " articles");
+    cb(err, newArticles);
+  });
+}
+
+async.waterfall([
+  function(cb) {
+    // Get all feeds
+    Feed.list({}, cb)
+  },
+  function(feeds, cb) {
+    // Scrape all feed sources
+    scrapeSources(feeds, cb)
+  },
+  function(articles, cb) {
+    // Find or create each article
+    findOrCreateArticles(articles, cb)
+  }
+], function(err) {
+  if (err) process.exit(1);
+  else {
+    //Alert Dead Man's Snitch
+    request.get('https://nosnch.in/81ff490627', function() {
+      process.exit(0);
+    });
+  }
+});
 
 
 // Example using reddit api

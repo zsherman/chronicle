@@ -1,0 +1,5 @@
+- Users enters new source
+- We check if that source exists
+  - If it does, then we do nothing
+  - If it doesn't, we scrape it and store the links
+- The email cron run looks through the users's subscriptions, compiles links and emails
