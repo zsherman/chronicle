@@ -10,3 +10,5 @@ Useful Queries:
 db.getCollection('subscriptions').find({_id: ObjectId("552c86991f70110000de680a")})
 <!-- Find by parent id -->
 db.getCollection('subscriptions').find({"user": ObjectId("550daf18a4050bb275cb31f9")})
+
+"Follow blogs that don't have RSS feeds." - Using Kimono like tool, hellobar/tumblr follow bar.
