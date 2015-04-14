@@ -114,7 +114,7 @@ function findOrCreateArticles(articles, cb) {
 async.waterfall([
   function(cb) {
     // Get all feeds
-    Feed.list({}, cb)
+    Feed.find({}, cb)
   },
   function(feeds, cb) {
     // Scrape all feed sources
