@@ -25,6 +25,9 @@ var Subscription = mongoose.model('Subscription');
 var mongooseUser = require('../app/models/user');
 var User = mongoose.model('User');
 
+var mongooseArticle = require('../app/models/article');
+var Article = mongoose.model('Article');
+
 // Connect to SendGrid
 var sendgrid  = require('sendgrid')('chronicle-app', 'no11pfds');
 
@@ -54,16 +57,22 @@ function findSubscriptions(users, cb) {
 }
 
 function sendEmails(subscriptions, cb) {
-  var payload;
-
-  async.each(subscriptions, function(subscription, callback) {
-    payload   = {
-      to      : 'zksherm@gmail.com',
-      from    : 'zach@chronicle.io',
-      subject : 'Your Weekly Digest',
-      text    : 'Here is your weekly digest:'
-    }
+  //console.log(subscriptions);
+  _.each(subscriptions, function(sub) {
+    Article.find({feed: sub.feed}, function(err, articles) {
+      console.log(articles);
+    });
   });
+  // var payload;
+
+  // async.each(subscriptions, function(subscription, callback) {
+  //   payload   = {
+  //     to      : 'zksherm@gmail.com',
+  //     from    : 'zach@chronicle.io',
+  //     subject : 'Your Weekly Digest',
+  //     text    : 'Here is your weekly digest:'
+  //   }
+  // });
 }
 
 async.waterfall([

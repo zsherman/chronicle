@@ -52,7 +52,7 @@ exports.index = function (req, res){
  * New article
  */
 
-exports.new = function (req, res){
+exports.new = function (req, res) {
   res.render('feeds/new', {
     title: 'New Feed',
     feed: new Feed({})

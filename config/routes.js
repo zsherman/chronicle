@@ -102,10 +102,10 @@ module.exports = function (app, passport) {
 
   // feed routes
   app.param('feedId', feeds.load);
+  app.get('/feeds/new', auth.requiresLogin, feeds.new);
   app.get('/feeds/:feedId', feeds.show);
   app.post('/feeds', feeds.create);
   app.get('/feeds', feeds.index);
-  app.get('/feeds/new', feeds.new);
 
   // subscription routes
   app.param('subscriptionId', subscriptions.load);
@@ -132,10 +132,8 @@ module.exports = function (app, passport) {
    */
 
   app.use(function (err, req, res, next) {
-    console.log(err);
-    console.log(err.message);
-    console.log(req);
     // treat as 404
+    console.log(err);
     if (err.message
       && (~err.message.indexOf('not found')
       || (~err.message.indexOf('Cast to ObjectId failed')))) {
@@ -148,7 +146,6 @@ module.exports = function (app, passport) {
 
   // assume 404 since no middleware responded
   app.use(function (req, res, next) {
-    console.log(req.body);
     res.status(404).render('404', {
       url: req.originalUrl,
       error: 'Not found'
