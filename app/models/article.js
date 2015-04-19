@@ -52,6 +52,7 @@ var setTags = function (tags) {
 var ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
   feed: {type : Schema.ObjectId, ref : 'Feed'},
+  feedSource: {type : String, default : '', trim : true},
   link: {type : String, default : '', trim : true, unique : true},
   score: {type : Number, default : 1 },
   tags: {type: [], get: getTags, set: setTags},

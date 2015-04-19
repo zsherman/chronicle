@@ -73,7 +73,7 @@ function scrapeSources(feeds, cb) {
     }])
     .run(function(err, elements) {
       elements = elements.map(function(el) {
-        return _.merge(el, {feed: feed._id});
+        return _.merge(el, {feed: feed._id, feedSource: feed.source});
       });
       Array.prototype.push.apply(articles, elements);
       callback();
@@ -93,6 +93,7 @@ function findOrCreateArticles(articles, cb) {
           title: article.title,
           link: article.link,
           feed: article.feed,
+          feedSource: article.feedSource,
           score: score
         });
         newArticle.save(function(error, newArticle) {

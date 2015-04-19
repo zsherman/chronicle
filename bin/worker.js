@@ -6,6 +6,8 @@ var async = require('async');
 var _ = require('lodash');
 var Schema = mongoose.Schema;
 var ObjectId = mongoose.Types.ObjectId;
+var swig  = require('swig');
+var path = require('path')
 
 // Connect to mongodb
 var connect = function () {
@@ -38,9 +40,7 @@ var log = bunyan.createLogger({name: "chronicle-worker"});
 function findSubscriptions(users, cb) {
   var subs = [];
   async.each(users, function(user, callback) {
-    console.log(user);
     Subscription.find({user: ObjectId(user._id)}, function(err, subscriptions) {
-      console.log(subscriptions);
       Array.prototype.push.apply(subs, subscriptions);
       callback();
     });
@@ -50,7 +50,6 @@ function findSubscriptions(users, cb) {
 }
 
 function buildEmails(subscriptions, cb) {
-
   async.each(subscriptions, function(subscription, callback) {
     subscription.substitutions = [];
     async.each(subscription.subscriptions, function(sub, callback2) {
@@ -64,11 +63,16 @@ function buildEmails(subscriptions, cb) {
         articles = articles.slice(0, sub.quantity-1);
 
         // Create list elements for each article
-        articles = articles.map(function(article) {
-          return '<li><a href="' + article.link + '">' + article.title + '</a></li>'
+        _.each(articles, function(article) {
+          subscription.substitutions.push(
+            {
+              articles: {title: article.title, link: article.link},
+              feedName: article.feedSource
+            }
+          )
         });
         // Add to substititions
-        Array.prototype.push.apply(subscription.substitutions, articles);
+        //subscription.substitutions.push(articles);
         // Execute callback
         callback2();
       });
@@ -81,76 +85,10 @@ function buildEmails(subscriptions, cb) {
   });
 }
 
-
-function sendEmail(subscriptions, cb) {
-
-  async.each(subscriptions, function(subscription, callback) {
-    var payload,
-        email,
-        user,
-        substitutions = [];
-    // Loop through subscriptions within hash
-    async.each(subscription.subscriptions, function(sub, callback2) {
-      // Find all articles associated with the subscription's feed
-      Article.find({feed: sub.feed}, function(articles) {
-        // Sort them by score
-        //console.log(articles);
-        articles = _.sortBy(articles, function(article) {
-          return article.score;
-        });
-        // Trim down to specified quantity
-        articles = articles.slice(0, sub.quantity-1);
-
-        // Create list elements for each article
-        articles = articles.map(function(article) {
-          return '<li><a href="' + article.link + '">' + article.title + '</a></li>'
-        });
-        // Add to substititions
-        Array.prototype.push.apply(substitutions, articles);
-        // Execute callback
-        callback2();
-      }, function(err) {
-        callback();
-      });
-    });
-
-    // Grab the user from the subscription hash
-    user = User.findById(subscription.user);
-    // Define payload
-    payload   = {
-      to      : user.email,
-      from    : 'zach@chronicle.io',
-      subject : 'Your Digest',
-      text    : 'Here is your digest:'
-    }
-    // Email settings
-    email = new sendgrid.Email(payload);
-    email.addFilter('templates', 'enable', 1);
-    email.addFilter('templates', 'template_id', '08715756-7bbc-4d51-add2-c655bf3e1d04');
-
-    // Fill in email template
-    email.setSubstitutions({articles: substitutions.toString()});
-
-    sendgrid.send(email, function(err, json) {
-      if (err) { console.error(err); }
-      // Alert Dead Man's Snitch
-      success = true;
-      request.get('https://nosnch.in/81ff490627');
-      console.log(json);
-      callback();
-    });
-  }, function(err){
-    cb(err, success)
-  });
-
-}
-
 function sendEmails(subscriptions, cb) {
-    var email, success;
+    var email, success, html, feeds, articles;
     // Grab the user from the subscription hash
     async.each(subscriptions, function(subscription, callback) {
-      //var user = User.findById(subscription.user);
-      console.log(subscription);
       User.findOne({_id: subscription.user}, function (err, user) {
         // Define payload
         payload   = {
@@ -162,7 +100,26 @@ function sendEmails(subscriptions, cb) {
 
         // Email settings
         email = new sendgrid.Email(payload);
-        email.setHtml(subscription.substitutions.join("\n"));
+
+        // {markup: '<div></div>', feedSource: 'reddit.com/r/funny'}
+        //console.log(subscription.substitutions);
+        feeds = _.chain(subscription.substitutions)
+            .groupBy("feedName")
+            .pairs()
+            .map(function(sub) {
+                return _.object(_.zip(["feedName", "articles"], sub));
+            })
+            .value();
+
+        // Build email template
+        html = swig.renderFile(__dirname + '/template.html', {
+          feeds: feeds
+        });
+
+        // subscription.substitutions.join("\n")
+        email.setHtml(html);
+
+        // Set Template
         // email.addFilter('templates', 'enable', 1);
         // email.addFilter('templates', 'template_id', '08715756-7bbc-4d51-add2-c655bf3e1d04');
 
