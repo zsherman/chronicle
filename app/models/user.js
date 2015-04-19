@@ -5,6 +5,7 @@
 
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+var Subscription = mongoose.model('Subscription');
 
 var Schema = mongoose.Schema;
 var oAuthTypes = [
@@ -152,6 +153,16 @@ UserSchema.methods = {
     } catch (err) {
       return '';
     }
+  },
+
+  isSubscribed: function(feed, callback) {
+    Subscription.findOne({user: this, feed: feed}, function(err, subscription) {
+      if(subscription) {
+        return true
+      } else {
+        return false
+      }
+    });
   },
 
   /**

@@ -5,8 +5,10 @@
 
 var mongoose = require('mongoose')
 var Feed = mongoose.model('Feed')
+var Subscription = mongoose.model('Subscription')
 var utils = require('../../lib/utils')
 var extend = require('util')._extend
+var async = require('async');
 
 /**
  * Load
@@ -37,14 +39,30 @@ exports.index = function (req, res){
 
   Feed.list(options, function (err, feeds) {
     if (err) return res.render('500');
-    Feed.count().exec(function (err, count) {
-      res.render('feeds/index', {
-        title: 'Feeds',
-        feeds: feeds,
-        page: page + 1,
-        pages: Math.ceil(count / perPage)
+
+    async.each(feeds, function(feed, callback) {
+      Subscription.findOne({user: req.user, feed: feed}, function(err, subscription) {
+        if(subscription) {
+          feed.subscribed = true;
+          callback();
+        } else {
+          feed.subscribed = false;
+          callback();
+        }
+      });
+    }, function(err) {
+      if (err) return res.render('500');
+      Feed.count().exec(function (err, count) {
+        res.render('feeds/index', {
+          title: 'Feeds',
+          feeds: feeds,
+          user: req.user,
+          page: page + 1,
+          pages: Math.ceil(count / perPage)
+        });
       });
     });
+
   });
 };
 

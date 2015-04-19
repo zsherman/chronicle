@@ -76,7 +76,10 @@ exports.create = function (req, res) {
           res.json(newSubscription);
         });
     } else {
-      res.status(400).send('Subscription already exists');
+      doc.remove(function(err) {
+        if(err) res.json(err);
+        res.json(doc);
+      });
     }
   });
 };
@@ -118,8 +121,8 @@ exports.show = function (req, res){
  */
 
 exports.destroy = function (req, res){
-  console.log("ok");
-  var subscription = req.subscription;
+  var feed = req.feed;
+  console.log(feed);
   subscription.remove(function (err){
     req.flash('info', 'Deleted successfully');
     res.redirect('/feeds');

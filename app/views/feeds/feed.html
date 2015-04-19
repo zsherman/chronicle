@@ -5,7 +5,11 @@
     </a>
   </h3>
   <p>type: {{ feed.type }}</p>
-  <p><a href="#" data-feed-id="{{ '' + feed._id }}" class="subscribe">Subscribe</a></p>
+  {% if feed.subscribed %}
+    <p><a href="#" data-feed-id="{{ '' + feed._id }}" class="unsubscribe">Subscribed</a></p>
+  {% else %}
+    <p><a href="#" data-feed-id="{{ '' + feed._id }}" class="subscribe">Subscribe</a></p>
+  {% endif %}
 
   <span class="muted">{{ feed.createdAt.toISOString()|date('M d, Y  h:m a') }}</span>
 </div>
