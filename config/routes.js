@@ -115,7 +115,7 @@ module.exports = function (app, passport) {
   app.delete('/subscriptions/:id', subscriptions.destroy);
 
   // home route
-  app.get('/', articles.index);
+  app.get('/', feeds.index);
 
   // comment routes
   app.param('commentId', comments.load);
