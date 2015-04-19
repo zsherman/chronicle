@@ -1,6 +1,5 @@
 var request = require('request');
 var bunyan = require('bunyan');
-var rereddit = require('rereddit');
 var config = require('config');
 var mongoose = require('mongoose');
 var async = require('async');
