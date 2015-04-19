@@ -68,6 +68,7 @@ exports.new = function (req, res){
 
 exports.create = function (req, res) {
   var newSubscription = new Subscription(req.body);
+  newSubscription.user = req.user;
   Subscription.findOne({user: req.user, feed: req.body.feed}, function (err, doc) {
     if (!doc) {
       newSubscription.save(function(err) {

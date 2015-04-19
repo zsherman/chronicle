@@ -36,15 +36,12 @@ var sendgrid  = require('sendgrid')('chronicle-app', 'no11pfds');
 
 var log = bunyan.createLogger({name: "chronicle-worker"});
 
-// Get list of users
-  // Get user's subscriptions
-    // Get articles for each subscription
-    // Compile and send email
-
 function findSubscriptions(users, cb) {
   var subs = [];
   async.each(users, function(user, callback) {
-    Subscription.find({user: user._id}, function(err, subscriptions) {
+    console.log(user);
+    Subscription.find({user: ObjectId(user._id)}, function(err, subscriptions) {
+      console.log(subscriptions);
       Array.prototype.push.apply(subs, subscriptions);
       callback();
     });
@@ -154,6 +151,7 @@ function sendEmails(subscriptions, cb) {
     // Grab the user from the subscription hash
     async.each(subscriptions, function(subscription, callback) {
       //var user = User.findById(subscription.user);
+      console.log(subscription);
       User.findOne({_id: subscription.user}, function (err, user) {
         // Define payload
         payload   = {
@@ -177,7 +175,6 @@ function sendEmails(subscriptions, cb) {
           // Alert Dead Man's Snitch
           request.get('https://nosnch.in/81ff490627');
           console.log(json);
-          console.log(email);
           callback();
         });
       });
@@ -216,51 +213,5 @@ async.waterfall([
   process.exit(0);
 });
 
-
-// Subscription.list({}, function(err, subscriptions) {
-//   log.info(subscriptions);
-// });
-
-// var articles = [
-//   {
-//     title: 'Derpy Pug Plays Fetch'
-//   },
-//   {
-//     title: 'Grumpy Cat Goes to Work'
-//   }
-// ]
-
-// var articles = 'Derpy Pug Plays Fetch, Grumpy Cat Goes to Work';
-
-// var payload   = {
-//   to      : 'zksherm@gmail.com',
-//   from    : 'zach@chronicle.io',
-//   subject : 'Your Weekly Digest',
-//   text    : 'Here is your weekly digest:'
-// }
-
-// var email = new sendgrid.Email(payload);
-
-// // add filter settings one at a time
-// email.addFilter('templates', 'enable', 1);
-// email.addFilter('templates', 'template_id', '08715756-7bbc-4d51-add2-c655bf3e1d04');
-
-// // set a filter using an object literal.
-// email.setFilters({
-//     'templates': {
-//         'settings': {
-//             'enable': 1,
-//             'template_id' : '08715756-7bbc-4d51-add2-c655bf3e1d04',
-//         }
-//     }
-// });
-
 // // Todo: Use handlebars or swig template to send in here
 // email.setSubstitutions({articles: ['<li><a href="https://reddit.com/r/funny">Girly Things</a></li><li><a href="https://reddit.com/r/funny">Buttons</a></li><li><a href="https://reddit.com/r/funny">Girly Things</a></li>']});
-
-// sendgrid.send(email, function(err, json) {
-//   if (err) { console.error(err); }
-//   // Alert Dead Man's Snitch
-//   // request.get('https://nosnch.in/81ff490627');
-//   console.log(json);
-// });
