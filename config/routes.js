@@ -12,6 +12,7 @@ var feeds = require('feeds');
 var subscriptions = require('subscriptions');
 var comments = require('comments');
 var tags = require('tags');
+var pages = require('pages');
 var auth = require('./middlewares/authorization');
 
 /**
@@ -125,6 +126,9 @@ module.exports = function (app, passport) {
 
   // tag routes
   app.get('/tags/:tag', tags.index);
+
+  // pages routes
+  app.get('/search', pages.search);
 
 
   /**

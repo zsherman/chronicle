@@ -67,21 +67,57 @@ exports.new = function (req, res){
  */
 
 exports.create = function (req, res) {
-  var newSubscription = new Subscription(req.body);
-  newSubscription.user = req.user;
-  Subscription.findOne({user: req.user, feed: req.body.feed}, function (err, doc) {
-    if (!doc) {
-      newSubscription.save(function(err) {
+  // If feed doesn't exist, create it and subscribe
+  console.log(req.body);
+
+  if(req.body.url) {
+    var url = 'http://reddit.com' + req.body.url;
+    Feed.findOne({source: url}, function(err, doc) {
+      if(!doc) {
+        var feed = new Feed({source: url});
+        feed.save(function(err, feedDoc) {
           if(err) res.json(err);
-          res.json(newSubscription);
+          var subscription = new Subscription({
+            user: req.user,
+            feed: feedDoc
+          });
+          subscription.save(function(err, sub) {
+            res.json(sub);
+          });
+        })
+      } else {
+        Subscription.findOne({user: req.user, feed: doc}, function (err, sub) {
+          if(!sub) {
+            var subscription = new Subscription({
+               user: req.user,
+               feed: doc
+             });
+             subscription.save(function(err, newSub) {
+               res.json(newSub);
+             });
+          } else {
+            res.json(sub);
+          }
         });
-    } else {
-      doc.remove(function(err) {
-        if(err) res.json(err);
-        res.json(doc);
-      });
-    }
-  });
+      }
+    });
+  } else {
+    var newSubscription = new Subscription(req.body);
+    newSubscription.user = req.user;
+    Subscription.findOne({user: req.user, feed: req.body.feed}, function (err, doc) {
+      if (!doc) {
+        newSubscription.save(function(err) {
+            if(err) res.json(err);
+            res.json(newSubscription);
+          });
+      } else {
+        doc.remove(function(err) {
+          if(err) res.json(err);
+          res.json(doc);
+        });
+      }
+    });
+  }
 };
 
 exports.unsubscribe = function(req, res) {
