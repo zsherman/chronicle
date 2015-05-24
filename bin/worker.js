@@ -128,13 +128,13 @@ function sendEmails(subscriptions, cb) {
         // Fill in email template
         //email.setSubstitutions({articles: subscription.substitutions.join("\n")});
 
-        // sendgrid.send(email, function(err, json) {
-        //   if (err) { console.error(err); }
-        //   // Alert Dead Man's Snitch
-        //   request.get('https://nosnch.in/81ff490627');
-        //   console.log(json);
-        //   callback();
-        // });
+        sendgrid.send(email, function(err, json) {
+          if (err) { console.error(err); }
+          // Alert Dead Man's Snitch
+          request.get('https://nosnch.in/81ff490627');
+          console.log(json);
+          callback();
+        });
       });
     },
     function(err){
