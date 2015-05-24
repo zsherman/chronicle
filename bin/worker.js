@@ -53,9 +53,11 @@ function buildEmails(subscriptions, cb) {
   async.each(subscriptions, function(subscription, callback) {
     subscription.substitutions = [];
     async.each(subscription.subscriptions, function(sub, callback2) {
-      Article.find({feed: ObjectId(sub.feed)}, function(err, articles) {
+      var date = new Date();
+      date.setDate(date.getDate()-1);
+      Article.find({feed: ObjectId(sub.feed), createdAt: {$gte: date}}, function(err, articles) {
         // Sort them by score
-        //console.log(articles);
+        console.log(articles);
         articles = _.sortBy(articles, function(article) {
           return article.score;
         });
@@ -126,13 +128,13 @@ function sendEmails(subscriptions, cb) {
         // Fill in email template
         //email.setSubstitutions({articles: subscription.substitutions.join("\n")});
 
-        sendgrid.send(email, function(err, json) {
-          if (err) { console.error(err); }
-          // Alert Dead Man's Snitch
-          request.get('https://nosnch.in/81ff490627');
-          console.log(json);
-          callback();
-        });
+        // sendgrid.send(email, function(err, json) {
+        //   if (err) { console.error(err); }
+        //   // Alert Dead Man's Snitch
+        //   request.get('https://nosnch.in/81ff490627');
+        //   console.log(json);
+        //   callback();
+        // });
       });
     },
     function(err){
